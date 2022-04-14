@@ -2,7 +2,7 @@ import './style.css';
 
 import { createTask, taskUI, taskModal, closeModal } from './createtask';
 
-import createProject from './createproject';
+import {createFullProject} from './createproject';
 
 
 
@@ -43,20 +43,13 @@ rest.completeTask();
 content.appendChild(taskUI(rest));
 
 
-const projectOne = createProject(['one']);
-const projectTwo = ['two'];
 
-projectOne.push(rest);
-projectOne.push(bye);
 
-projectTwo.push([hello]);
+createFullProject('two', projectArray);
+createFullProject('zero', projectArray);
 
-projectArray.push(projectOne);
-projectArray.push(projectTwo);
-
-const testProject = createProject(['oneTime']);
 
 
 console.table(projectArray);
 
-console.table(testProject);
+

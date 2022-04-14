@@ -1,10 +1,13 @@
+import { de } from "date-fns/locale";
+
 function createProject(name) {
-return name
+return name;
 };
 
 // Creates project side bar
-function projectSidebarUI(name) {
+function projectSidebarUI(name, array) {
     const sidebar = document.querySelector('.sidebar');
+    const projectArray = array;
 
 
     const projectBox = document.createElement('div');
@@ -17,6 +20,16 @@ function projectSidebarUI(name) {
     deleteProject.classList.add('delete-project');
     deleteProject.innerText = '+';
 
+    // Deletes project from array and removes UI
+    deleteProject.addEventListener('click', function() {
+        const removeProject = projectArray.findIndex((project) => project == name);
+        projectArray.splice(removeProject, 1);
+        deleteProject.parentElement.remove()
+        console.log(projectArray);
+    });
+
+    
+
     projectBox.appendChild(projectName);
     projectBox.appendChild(deleteProject);
 
@@ -25,20 +38,15 @@ function projectSidebarUI(name) {
     return sidebar;
 };
 
-function deleteProject(name) {
-    const projectBox = document.querySelector('.project-box');
 
-    const deleteProject = document.querySelector('.delete-project');
-    deleteProject.addEventListener('click', function() {
-        projectArray.filter(function(project) {
-         return project !== name;
-        });
 
-        projectBox.remove();
-    });
 
-};
+function createFullProject(name, array) {
+    
+    array.push(createProject(name));
+    projectSidebarUI(name, array);
+}
 
-export {createProject, projectSidebarUI, deleteProject};
+export {createFullProject};
 
 
