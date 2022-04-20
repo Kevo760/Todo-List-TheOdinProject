@@ -83,12 +83,23 @@ header button:active {
 
 .sidebar h2 {
     margin-top: 16px;
+    margin-bottom: 6px;
 }
 
 .project-box {
     display: flex;
     flex-direction: row;
-    margin-top: 8px;
+    padding: 6px;
+    cursor: pointer;
+}
+
+.project-box:hover {
+    background-color: var(--note-color);
+    border-radius: 6px;
+}
+
+.project-box:active {
+    background-color: var(--note-color);
 }
 
 .delete-project {

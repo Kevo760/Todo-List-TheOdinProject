@@ -10,24 +10,27 @@ function createTask(name, date, descript, priority, complete = 'false') {
  };
 
 
- function taskUI(a) {
+ function taskUI(name, date, descript, priority, complete = 'false') {
      const notebox = document.createElement('div');
      notebox.classList.add('notebox');
 
      const deleteTask = document.createElement('span');
      deleteTask.classList.add('delete-task');
      deleteTask.innerText = '+';
+     deleteTask.addEventListener('click', function() {
+        notebox.remove();
+     });
 
 
      const taskText = document.createElement('h2');
-     taskText.innerHTML = a.name;
+     taskText.innerHTML = name;
 
      const taskDate = document.createElement('h3');
-     taskDate.innerText = a.date;
+     taskDate.innerText = date;
 
      const taskDescript = document.createElement('p');
      taskDescript.classList.add('description');
-     taskDescript.innerText = a.descript;
+     taskDescript.innerText = descript;
 
      const editBtn = document.createElement('button');
      editBtn.id = 'edit-btn';
@@ -36,10 +39,10 @@ function createTask(name, date, descript, priority, complete = 'false') {
      const priorityBox = document.createElement('div');
      priorityBox.classList.add('priority-box');
 
-     if(a.priority == 'low') {
+     if(priority == 'low') {
          priorityBox.innerText = 'Low';
          priorityBox.style.backgroundColor = 'yellow';
-     } else if (a.priority == 'mid') {
+     } else if (priority == 'mid') {
         priorityBox.innerText = 'Mid';
         priorityBox.style.backgroundColor = 'orange';
      } else {
@@ -50,7 +53,7 @@ function createTask(name, date, descript, priority, complete = 'false') {
      const statusBtn = document.createElement('button');
      statusBtn.id = 'status-btn';
 
-     if(a.complete == 'false') {
+     if(complete == 'false') {
          statusBtn.innerText = 'Uncomplete';
      } else {
          statusBtn.innerText = 'Completed';
@@ -149,16 +152,19 @@ function createTask(name, date, descript, priority, complete = 'false') {
      taskModal.style.display = 'none';
      });
 
- }
-
- function deleteTask() {
-    const task = docment.querySelector('.delete-task');
-    task.addEventListener('click', function() {
-        notebox.remove();
-     });
-
-     return task
  };
- 
 
- export {createTask, taskUI, taskModal, closeModal};
+ function createFullTask(array, project, name, date, descript, priority, complete) {
+    const content = document.querySelector('.content');
+     
+    const newTask = createTask(name, date, descript, priority, complete = 'false');
+    content.appendChild(taskUI(name, date, descript, priority, complete = 'false'));
+
+    // Find the project array index
+    const findProjectIndex = array.findIndex(e => e[0] == project);
+    // Pushes the task on the project
+    array[findProjectIndex].push(newTask);
+ };
+
+
+ export {createFullTask, taskModal, closeModal, createTask};

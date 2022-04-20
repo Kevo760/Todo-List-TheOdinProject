@@ -1,4 +1,3 @@
-import { de } from "date-fns/locale";
 
 function createProject(name) {
 return name;
@@ -13,7 +12,9 @@ function projectSidebarUI(name, array) {
     const projectBox = document.createElement('div');
     projectBox.classList.add('project-box');
 
+
     const projectName = document.createElement('p');
+    projectName.classList.add('project-name');
     projectName.innerText = name;
 
     const deleteProject = document.createElement('p');
@@ -39,13 +40,19 @@ function projectSidebarUI(name, array) {
 };
 
 
+function displayProject() {
+    const projectBox = document.querySelectorAll('.project-box');
+
+
+};
 
 
 function createFullProject(name, array) {
     
     array.push(createProject(name));
     projectSidebarUI(name, array);
-}
+    displayProject();
+};
 
 export {createFullProject};
 
