@@ -10,7 +10,7 @@ function createTask(name, date, descript, priority, complete = 'false') {
  };
 
 
- function taskUI(name, date, descript, priority, complete = 'false') {
+ function taskUI(array, project, task) {
      const notebox = document.createElement('div');
      notebox.classList.add('notebox');
 
@@ -18,19 +18,25 @@ function createTask(name, date, descript, priority, complete = 'false') {
      deleteTask.classList.add('delete-task');
      deleteTask.innerText = '+';
      deleteTask.addEventListener('click', function() {
+        // finds index of the project
+        const findProjectIndex = array.findIndex(e => e[0] == project);
+        // finds the index of the task within the project array based on name
+        const findTaskIndex = array[findProjectIndex].findIndex(e => e.name == task.name);
+        // removes the task from the project
+        array[findProjectIndex].splice(findTaskIndex, 1);
         notebox.remove();
      });
 
 
      const taskText = document.createElement('h2');
-     taskText.innerHTML = name;
+     taskText.innerHTML = task.name;
 
      const taskDate = document.createElement('h3');
-     taskDate.innerText = date;
+     taskDate.innerText = task.date;
 
      const taskDescript = document.createElement('p');
      taskDescript.classList.add('description');
-     taskDescript.innerText = descript;
+     taskDescript.innerText = task.descript;
 
      const editBtn = document.createElement('button');
      editBtn.id = 'edit-btn';
@@ -39,10 +45,10 @@ function createTask(name, date, descript, priority, complete = 'false') {
      const priorityBox = document.createElement('div');
      priorityBox.classList.add('priority-box');
 
-     if(priority == 'low') {
+     if(task.priority == 'low') {
          priorityBox.innerText = 'Low';
          priorityBox.style.backgroundColor = 'yellow';
-     } else if (priority == 'mid') {
+     } else if (task.priority == 'mid') {
         priorityBox.innerText = 'Mid';
         priorityBox.style.backgroundColor = 'orange';
      } else {
@@ -52,8 +58,21 @@ function createTask(name, date, descript, priority, complete = 'false') {
 
      const statusBtn = document.createElement('button');
      statusBtn.id = 'status-btn';
+     // Handles status completion
+     statusBtn.addEventListener('click', function() {
+        if (task.complete == 'false') {
+            task.completeTask();
+            statusBtn.style.textDecoration = 'line-through';
+            statusBtn.innerText = 'Completed';
+        } else {
+            task.uncompleteTask();
+            statusBtn.style.textDecoration = 'none';
+            statusBtn.innerText = 'Uncompleted';
+        }
+    });
+  
 
-     if(complete == 'false') {
+     if(task.complete == 'false') {
          statusBtn.innerText = 'Uncomplete';
      } else {
          statusBtn.innerText = 'Completed';
@@ -74,6 +93,9 @@ function createTask(name, date, descript, priority, complete = 'false') {
 
 
 
+
+
+
  function taskModal() {
      const taskModal = document.createElement('div');
      taskModal.classList.add('task-modal');
@@ -83,6 +105,9 @@ function createTask(name, date, descript, priority, complete = 'false') {
      const closeModal = document.createElement('span');
      closeModal.classList.add('close-modal');
      closeModal.innerText = '+';
+     closeModal.addEventListener('click', function() {
+        taskModal.style.display = 'none';
+        });
 
      const taskText = document.createElement('input');
      taskText.type = 'text';
@@ -143,23 +168,12 @@ function createTask(name, date, descript, priority, complete = 'false') {
     taskModal.append(taskModal);
     
     return taskModal
- }
-
- function closeModal() {
-     const taskModal = document.querySelector('.task-modal');
-     const closeModal = document.querySelector('.close-modal');
-     closeModal.addEventListener('click', function() {
-     taskModal.style.display = 'none';
-     });
-
  };
 
- function createFullTask(array, project, name, date, descript, priority, complete) {
-    const content = document.querySelector('.content');
-     
-    const newTask = createTask(name, date, descript, priority, complete = 'false');
-    content.appendChild(taskUI(name, date, descript, priority, complete = 'false'));
 
+ function createFullTask(array, project, name, date, descript, priority, complete) {
+
+    const newTask = createTask(name, date, descript, priority, complete = 'false');
     // Find the project array index
     const findProjectIndex = array.findIndex(e => e[0] == project);
     // Pushes the task on the project
@@ -167,4 +181,4 @@ function createTask(name, date, descript, priority, complete = 'false') {
  };
 
 
- export {createFullTask, taskModal, closeModal, createTask};
+ export {createFullTask, taskModal, taskUI};

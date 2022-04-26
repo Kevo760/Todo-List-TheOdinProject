@@ -1,3 +1,4 @@
+import { taskUI } from "./createtask";
 
 function createProject(name) {
 return name;
@@ -40,20 +41,55 @@ function projectSidebarUI(name, array) {
 };
 
 
-function displayProject() {
-    const projectBox = document.querySelectorAll('.project-box');
+function activeProject(array) {
+    const sidebar = document.querySelector('.sidebar');
+    const content = document.querySelector('.content');
 
+
+    const projectBox = sidebar.getElementsByClassName('project-box');
+
+    for (let i = 0; i < projectBox.length; i++) {
+        projectBox[i].addEventListener('click', function() {
+            let current = document.getElementsByClassName('active');
+            if (current.length > 0) {
+                // Removes current active class
+                current[0].className = current[0].className.replace(' active', '');
+            };
+            // Empties content
+            content.innerHTML = '';
+
+            // Set's clicked project box to active
+            this.className += ' active';
+            const projectName = this.children[0].innerText;
+            // Finds index of project name
+            const projectIndex = array.findIndex(e => e[0] == projectName);
+
+            // Displays the active project that is clicked
+            const activeProject = array[projectIndex];
+            for (let i = 0; i < activeProject.length; i++) {
+                // Displays only objects
+                if(typeof activeProject[i] == 'object') {
+                    content.append(taskUI(array, projectName, activeProject[i]));
+                };
+            };
+
+        });
+    };
 
 };
 
 
 function createFullProject(name, array) {
     
-    array.push(createProject(name));
+    array.push(createProject([name]));
     projectSidebarUI(name, array);
-    displayProject();
+    activeProject(array);
 };
 
-export {createFullProject};
+
+
+
+
+export {createFullProject, activeProject};
 
 

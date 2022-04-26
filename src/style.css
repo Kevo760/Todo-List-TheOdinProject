@@ -93,14 +93,13 @@ header button:active {
     cursor: pointer;
 }
 
-.project-box:hover {
+.project-box:hover, .active {
     background-color: var(--note-color);
     border-radius: 6px;
+
 }
 
-.project-box:active {
-    background-color: var(--note-color);
-}
+
 
 .delete-project {
     margin-left: auto;
