@@ -26,8 +26,7 @@ function projectSidebarUI(name, array) {
     deleteProject.addEventListener('click', function() {
         const removeProject = projectArray.findIndex((project) => project == name);
         projectArray.splice(removeProject, 1);
-        deleteProject.parentElement.remove()
-        console.log(projectArray);
+        deleteProject.parentElement.remove();
     });
 
     
@@ -41,6 +40,7 @@ function projectSidebarUI(name, array) {
 };
 
 
+// Handles project that is clicked to show the task it contains
 function activeProject(array) {
     const sidebar = document.querySelector('.sidebar');
     const content = document.querySelector('.content');
@@ -54,7 +54,7 @@ function activeProject(array) {
             if (current.length > 0) {
                 // Removes current active class
                 current[0].className = current[0].className.replace(' active', '');
-            };
+            }
             // Empties content
             content.innerHTML = '';
 
@@ -64,6 +64,17 @@ function activeProject(array) {
             // Finds index of project name
             const projectIndex = array.findIndex(e => e[0] == projectName);
 
+            // Back up when there is no active class it defaults to main project
+            if(projectIndex == '-1') {
+                projectBox[0].classList.add('active');
+                const main = array[0];
+                for (let i = 0; i < main.length; i++) {
+                    if (typeof main[i] == 'object' ) {
+                        content.append(taskUI(array, 'Main', main[i]));
+                    }
+                };
+            } else {
+
             // Displays the active project that is clicked
             const activeProject = array[projectIndex];
             for (let i = 0; i < activeProject.length; i++) {
@@ -71,6 +82,10 @@ function activeProject(array) {
                 if(typeof activeProject[i] == 'object') {
                     content.append(taskUI(array, projectName, activeProject[i]));
                 };
+            }
+
+
+
             };
 
         });
@@ -78,7 +93,7 @@ function activeProject(array) {
 
 };
 
-
+// Creates project on the side bar ui and pushes project to the main array
 function createFullProject(name, array) {
     
     array.push(createProject([name]));
@@ -87,9 +102,73 @@ function createFullProject(name, array) {
 };
 
 
+function addProjectButton(array) {
+
+const projectBtn = document.querySelector('#newProject');
+projectBtn.addEventListener('click', function() {
+    projectModalUI(array);
+})
+
+};
 
 
 
-export {createFullProject, activeProject};
+function projectModalUI(array) {
+   
+    const projectModal = document.createElement('div');
+    projectModal.classList.add('modal');
+
+    //Form Area
+    const projectForm = document.createElement('form');
+    projectForm.classList.add('project-form');
+
+    const closeModal = document.createElement('span');
+    closeModal.classList.add('close-modal');
+    closeModal.innerText = '+';
+    // Removes project modal
+    closeModal.addEventListener('click', function() {
+        projectModal.remove();
+    });
 
 
+
+    const ProjectText = document.createElement('input');
+    ProjectText.type = 'text';
+    ProjectText.id = 'project-text';
+    ProjectText.placeholder = 'Project Name';
+    ProjectText.setAttribute('required', '');
+
+
+    const submitBtn = document.createElement('button');
+    submitBtn.type = 'submit';
+    submitBtn.innerText = 'Add Project';
+    submitBtn.addEventListener('click', function(e) {
+        const newProject = ProjectText.value;
+
+        if (ProjectText.value != '') {
+            createFullProject(newProject, array);
+            projectModal.remove();
+        };
+        
+    });
+
+    //Form Area
+    
+    projectForm.append(closeModal);
+    projectForm.append(ProjectText);
+    projectForm.append(submitBtn);
+
+    projectModal.append(projectForm);
+
+    return document.body.append(projectModal);
+};
+
+
+
+
+
+
+
+
+
+export {createFullProject, activeProject, addProjectButton}

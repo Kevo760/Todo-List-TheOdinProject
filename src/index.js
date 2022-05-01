@@ -1,10 +1,10 @@
 import './style.css';
 
-import { createFullTask, taskModal, closeModal, taskUI } from './createtask';
+import { createFullTask, addTaskButton} from './createtask';
 
-import {createFullProject} from './createproject';
+import {createFullProject, addProjectButton} from './createproject';
 
-import { createMainProject, displayMain } from './mainproject';
+import { createMainProject, displayMain} from './mainproject';
 
 
 
@@ -32,6 +32,18 @@ createFullTask(projectArray,'Main', 'rest', 'today', 'hello', 'low');
 createFullTask(projectArray,'Main','wake up', 'tomorrow', 'wake up yo', 'high');
 
 displayMain(projectArray);
+addProjectButton(projectArray);
+
+addTaskButton(projectArray);
+
+
+
+
+
+
+
+
+
 
 
 

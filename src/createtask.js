@@ -96,9 +96,9 @@ function createTask(name, date, descript, priority, complete = 'false') {
 
 
 
- function taskModal() {
+ function taskModal(array) {
      const taskModal = document.createElement('div');
-     taskModal.classList.add('task-modal');
+     taskModal.classList.add('modal');
 
      const taskForm = document.createElement('form');
 
@@ -108,33 +108,53 @@ function createTask(name, date, descript, priority, complete = 'false') {
      closeModal.addEventListener('click', function() {
         taskModal.style.display = 'none';
         });
-
+    
+    // Task Name
      const taskText = document.createElement('input');
      taskText.type = 'text';
      taskText.id = 'task';
      taskText.placeholder = 'Task';
-     taskText.required;
-
+     taskText.setAttribute('required', '');
+    
+     // Task Date
      const taskDate = document.createElement('input');
      taskDate.type = 'date';
      taskDate.id = 'date';
-     taskDate.required;
+     taskDate.setAttribute('required', '');
 
+    // Task Description
      const textArea = document.createElement('textarea');
      textArea.id = 'description';
      textArea.cols = '30';
      textArea.rows = '10';
      textArea.placeholder = 'Description';
      textArea.style.resize = 'none';
+     textArea.setAttribute('required', '');
 
-     //////////////// Multiple Selection
+     // Add to which project
+    const projectText = document.createElement('label');
+    projectText.for = 'project-select';
+    projectText.innerText = 'Project:';
+    
+    const selectProject = document.createElement('select');
+    selectProject.id = 'select-project';
+    
+    for (let i = 0; i < array.length; i++) {
+        const projectNames = array[i][0];
+        createOption(projectNames, selectProject)
+        };
+        
+
+
+
+     //////////////// Multiple Selection for priority
      const label = document.createElement('label');
      label.for = 'priority';
      label.innerText = 'Priority:';
 
-     const select = document.createElement('select');
-     select.name = 'priority';
-     select.id = 'priority';
+     const selectPriority = document.createElement('select');
+     selectPriority.name = 'priority';
+     selectPriority.id = 'priority';
 
      const optionLow = document.createElement('option');
      optionLow.value = 'low';
@@ -148,26 +168,98 @@ function createTask(name, date, descript, priority, complete = 'false') {
      optionHigh.value = 'high';
      optionHigh.innerText = 'High';
 
-     select.append(optionLow);
-     select.append(optionMid);
-     select.append(optionHigh);
+     selectPriority.append(optionLow);
+     selectPriority.append(optionMid);
+     selectPriority.append(optionHigh);
     ///////////////
-
+    
     const submitBtn = document.createElement('button');
     submitBtn.type = 'submit';
     submitBtn.innerText = 'Add Task';
+    submitBtn.addEventListener('click', function() {
+
+
+    // Grabs form info for task
+    const tName = taskText.value;
+    const tDate = taskDate.value;
+    const tDiscript = textArea.value;
+    const tPriority = selectPriority.value;
+
+    // Adds form info and add it as a object
+    const newTask = createTask(tName, tDate, tDiscript, tPriority);
+
+    //Grabs project value
+    const tProject = selectProject.value;
+
+    // Find the project array index
+    const findProjectIndex = array.findIndex(e => e[0] == tProject);
+    // Pushes the task on the project
+
+    if (taskText.value && taskDate.value && textArea.value != '') {
+       array[findProjectIndex].push(newTask);
+        taskModal.remove();
+
+        let current = document.getElementsByClassName('active');
+        if (current.length > 0) {
+            // Removes current active class
+            current[0].className = current[0].className.replace(' active', '');
+        }
+        
+        const projectBox = document.querySelector('.project-box');
+
+        // Empties content
+        content.innerHTML = '';
+
+        const activeProject = array[findProjectIndex];
+        for (let i = 0; i < activeProject.length; i++) {
+            // Displays only objects
+            if(typeof activeProject[i] == 'object') {
+                content.append(taskUI(array, projectName, activeProject[i]));
+            };
+        }
+    };
+
+
+    });
+
+
+
+
+
 
     taskForm.append(closeModal);
     taskForm.append(taskText);
     taskForm.append(taskDate);
+    taskForm.append(projectText);
+    taskForm.append(selectProject);
     taskForm.append(textArea);
     taskForm.append(label);
-    taskForm.append(select);
+    taskForm.append(selectPriority);
     taskForm.append(submitBtn);
 
-    taskModal.append(taskModal);
+    taskModal.append(taskForm);
     
-    return taskModal
+    return document.body.append(taskModal)
+ };
+
+ // Creates Options for form select
+ function createOption(name, appendTo) {
+    const options = document.createElement('option');
+    options.value = name;
+    options.innerText = name;
+
+    appendTo.append(options);
+ };
+
+
+ function addTaskButton(array) {
+
+    const taskBtn = document.querySelector('#newTask');
+
+    taskBtn.addEventListener('click', function() {
+        taskModal(array);
+    });
+
  };
 
 
@@ -181,4 +273,4 @@ function createTask(name, date, descript, priority, complete = 'false') {
  };
 
 
- export {createFullTask, taskModal, taskUI};
+ export {createFullTask, taskModal, taskUI, addTaskButton};
