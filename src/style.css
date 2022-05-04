@@ -246,13 +246,26 @@ background-color: hsl(353, 86%, 30%);
 .close-modal {
     position: absolute;
     right: 10px;
-    top: 5px;
+    top: 2px;
     font-size: 18px;
     transform: rotate(45deg);
     cursor: pointer;
 }
 
 /* ======================== TASK MODAL ====================== */
+
+
+/* ======================== EDIT TASK MODAL ====================== */
+
+
+.edit-task form {
+    grid-template-rows: 1fr 1fr 4fr .5fr 1fr 2fr;
+}
+
+/* ======================== EDIT TASK MODAL ====================== */
+
+
+
 
 /* ======================== PROJECT MODAL ====================== */
 
