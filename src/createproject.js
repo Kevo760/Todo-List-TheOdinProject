@@ -1,12 +1,20 @@
 import { taskUI } from "./createtask";
 import { projectModalUI } from "./projectmodal";
+import { mainProjectUI } from "./mainproject";
+import { getLocal, setLocal } from "./localStorage";
 
 function createProject(name) {
 return name;
 };
 
 // Creates project side bar
-function projectSidebarUI(name, array) {
+function projectSidebarUI(name, array, localSession) {
+//////////////////////////// LOCAL STORAGE //////////////////////////////
+if(localSession === true) {
+    array == getLocal();
+}
+//////////////////////////// LOCAL STORAGE //////////////////////////////
+
     const sidebar = document.querySelector('.sidebar');
     const projectArray = array;
 
@@ -25,9 +33,17 @@ function projectSidebarUI(name, array) {
 
     // Deletes project from array and removes UI
     deleteProject.addEventListener('click', function() {
+
         const removeProject = projectArray.findIndex((project) => project == name);
         projectArray.splice(removeProject, 1);
         deleteProject.parentElement.remove();
+
+//////////////////////////// LOCAL STORAGE //////////////////////////////
+if(localSession == true) {
+    setLocal(array);
+};
+//////////////////////////// LOCAL STORAGE //////////////////////////////
+
     });
 
     
@@ -42,7 +58,16 @@ function projectSidebarUI(name, array) {
 
 
 // Handles project that is clicked to show the task it contains
-function activeProject(array) {
+function activeProject(array, localSession) {
+//////////////////////////// LOCAL STORAGE //////////////////////////////
+
+if(localSession == true) {
+    array == getLocal();
+} else {
+    localSession == false;
+};
+//////////////////////////// LOCAL STORAGE //////////////////////////////  
+
     const sidebar = document.querySelector('.sidebar');
     const content = document.querySelector('.content');
 
@@ -71,7 +96,7 @@ function activeProject(array) {
                 const main = array[0];
                 for (let i = 0; i < main.length; i++) {
                     if (typeof main[i] == 'object' ) {
-                        content.append(taskUI(array, 'Main', main[i]));
+                        content.append(taskUI(array, 'Main', main[i], localSession));
                     }
                 };
             } else {
@@ -81,9 +106,9 @@ function activeProject(array) {
             for (let i = 0; i < activeProject.length; i++) {
                 // Displays only objects
                 if(typeof activeProject[i] == 'object') {
-                    content.append(taskUI(array, projectName, activeProject[i]));
+                    content.append(taskUI(array, projectName, activeProject[i], localSession));
                 };
-            }
+            };
 
 
 
@@ -95,20 +120,57 @@ function activeProject(array) {
 };
 
 // Creates project on the side bar ui and pushes project to the main array
-function createFullProject(name, array) {
-    
+function createFullProject(name, array, localSession) {
+//////////////////////////// LOCAL STORAGE //////////////////////////////
+if(localSession == true) {
+    array == getLocal();
+};
+//////////////////////////// LOCAL STORAGE //////////////////////////////
+
+    // pushes project into array
     array.push(createProject([name]));
-    projectSidebarUI(name, array);
-    activeProject(array);
+    // Creates sidebar UI
+
+//////////////////////////// LOCAL STORAGE //////////////////////////////
+if(localSession == true) {
+    setLocal(array);
+};
+//////////////////////////// LOCAL STORAGE //////////////////////////////
+
+    projectSidebarUI(name, array, localSession);
+    // Actives active project
+    activeProject(array, localSession);
 };
 
 
-function addProjectButton(array) {
+// Shows projects in the array and set main active and allows active projects to be clicked
+function displayProjects(array, localSession) {
+    
+
+    // Main project sidebar 
+    mainProjectUI('Main');
+    // Other project sidebar
+    for (let i = 1; i < array.length; i++) {
+        projectSidebarUI(array[i][0], array, localSession);
+    };
+    // Activates active class 
+    activeProject(array, localSession);
+};
+
+
+
+// add project button event listener on click
+function addProjectButton(array, localSession) {
+//////////////////////////// LOCAL STORAGE //////////////////////////////
+if(localSession == true) {
+    array == getLocal();
+};
+//////////////////////////// LOCAL STORAGE //////////////////////////////
 
 const projectBtn = document.querySelector('#newProject');
 projectBtn.addEventListener('click', function() {
-    projectModalUI(array);
-})
+    projectModalUI(array, localSession);
+});
 
 };
 
@@ -123,4 +185,4 @@ projectBtn.addEventListener('click', function() {
 
 
 
-export {createFullProject, activeProject, addProjectButton}
+export {createFullProject, activeProject, addProjectButton, displayProjects}

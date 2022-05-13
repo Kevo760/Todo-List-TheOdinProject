@@ -1,6 +1,14 @@
 import { taskUI, createTask } from "./createtask";
+import format from "date-fns/format";
+import { getLocal, setLocal } from "./localStorage";
 
-function taskModal(array) {
+function taskModal(array, localSession) {
+//////////////////////////// LOCAL STORAGE //////////////////////////////
+if(localSession == true) {
+    array == getLocal();
+};
+//////////////////////////// LOCAL STORAGE //////////////////////////////
+
     const taskModal = document.createElement('div');
     taskModal.classList.add('modal');
 
@@ -10,7 +18,7 @@ function taskModal(array) {
     closeModal.classList.add('close-modal');
     closeModal.innerText = '+';
     closeModal.addEventListener('click', function() {
-       taskModal.style.display = 'none';
+       taskModal.remove();
        });
    
    // Task Name
@@ -85,7 +93,7 @@ function taskModal(array) {
 
    // Grabs form info for task
    const tName = taskText.value;
-   const tDate = taskDate.value;
+   const tDate = format(new Date(taskDate.value), 'MM-dd-yyyy');
    const tDiscript = textArea.value;
    const tPriority = selectPriority.value;
 
@@ -101,7 +109,17 @@ function taskModal(array) {
 
    // If task text, date, and description is not empty push the task and remove the modal
    if (taskText.value && taskDate.value && textArea.value != '') {
+       // pushes the task to the project selected
       array[findProjectIndex].push(newTask);
+    
+//////////////////////////// LOCAL STORAGE //////////////////////////////
+    if(localSession == true) {
+        setLocal(array);
+    };
+//////////////////////////// LOCAL STORAGE //////////////////////////////
+
+
+      // Removes task modal
        taskModal.remove();
 
        // removes current active class name
@@ -121,7 +139,7 @@ function taskModal(array) {
        for (let i = 0; i < activeProject.length; i++) {
            // Displays only objects
            if(typeof activeProject[i] == 'object') {
-               content.append(taskUI(array, tProject, activeProject[i]));
+               content.append(taskUI(array, tProject, activeProject[i], localSession));
            };
        }
    };

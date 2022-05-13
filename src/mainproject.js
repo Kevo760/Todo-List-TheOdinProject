@@ -28,13 +28,13 @@ function mainProject(name) {
 
 
     
-    function displayMain(array) {
+    function displayMain(array, localSession) {
         const content = document.querySelector('.content');
     
         const main = array[0];
         for (let i = 0; i < main.length; i++) {
             if (typeof main[i] == 'object' ) {
-                content.append(taskUI(array, 'Main', main[i]));
+                content.append(taskUI(array, 'Main', main[i], localSession));
             }
         };
 
@@ -43,11 +43,11 @@ function mainProject(name) {
 
 
 
-    function createMainProject(name, array) {
+    function createMainProject(name, array, localSession) {
         
         array.push(mainProject([name]));
         mainProjectUI(name);
-        activeProject(array);
+        activeProject(array, localSession);
     };
 
     
@@ -56,4 +56,4 @@ function mainProject(name) {
 
     
     
-    export {createMainProject, displayMain};
+    export {createMainProject, displayMain, mainProjectUI};

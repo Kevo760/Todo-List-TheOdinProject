@@ -9,10 +9,10 @@
 
 
 html {
-    width: 100%;
-    height: 100%;
     background-color: var(--bg-color);
     font-family: 'Ubuntu', sans-serif;
+    height: 100%;
+    width: 100%;
 }
 
 * {
@@ -24,6 +24,11 @@ html {
 body {
     width: 100%;
     height: 100%;
+}
+
+.main-page {
+    height: 100%;
+    overflow: auto;
 }
 
 /* ======================== HEADER ====================== */
@@ -112,14 +117,13 @@ header button:active {
 /* ======================== CONTENT ====================== */
 
 .content {
-position: absolute;
-margin-left: 200px;
-margin-top: 70px;
-padding: 16px;
-display: flex;
-flex-direction: row;
-flex-wrap: wrap;
-gap: 10px;
+    margin-left: 200px;
+    margin-top: 70px;
+    padding: 16px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 
@@ -203,6 +207,7 @@ gap: 10px;
     align-items: center;
     background-color: rgba(0, 0, 0, 0.8);
     z-index: 3;
+    top: 0;
 }
 
 .modal form {
@@ -250,6 +255,11 @@ background-color: hsl(353, 86%, 30%);
     font-size: 18px;
     transform: rotate(45deg);
     cursor: pointer;
+}
+
+#edit-btn:hover, #status-btn:hover {
+background-color: var(--side-bar);
+color: white;
 }
 
 /* ======================== TASK MODAL ====================== */

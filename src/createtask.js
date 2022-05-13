@@ -1,5 +1,6 @@
 import { taskModal } from "./taskmodal";
 import { editTaskModal } from "./editTaskModal";
+import { getLocal, setLocal } from "./localStorage";
 
 function createTask(name, date, descript, priority, complete = 'false') {
     return {name, date, descript, priority, complete,
@@ -13,7 +14,17 @@ function createTask(name, date, descript, priority, complete = 'false') {
  };
 
 
- function taskUI(array, project, task) {
+ function taskUI(array, project, task, localSession) {
+//////////////////////////// LOCAL STORAGE //////////////////////////////
+
+if(localSession == true) {
+    array == getLocal();
+} else {
+    localSession == false;
+};
+//////////////////////////// LOCAL STORAGE //////////////////////////////    
+
+
      const notebox = document.createElement('div');
      notebox.classList.add('notebox');
 
@@ -21,12 +32,20 @@ function createTask(name, date, descript, priority, complete = 'false') {
      deleteTask.classList.add('delete-task');
      deleteTask.innerText = '+';
      deleteTask.addEventListener('click', function() {
+        
         // finds index of the project
         const findProjectIndex = array.findIndex(e => e[0] == project);
         // finds the index of the task within the project array based on name
         const findTaskIndex = array[findProjectIndex].findIndex(e => e.name == task.name);
         // removes the task from the project
         array[findProjectIndex].splice(findTaskIndex, 1);
+
+//////////////////////////// LOCAL STORAGE //////////////////////////////
+    if(localSession == true) {
+        setLocal(array);
+    };
+//////////////////////////// LOCAL STORAGE //////////////////////////////
+
         notebox.remove();
      });
 
@@ -45,7 +64,8 @@ function createTask(name, date, descript, priority, complete = 'false') {
      editBtn.id = 'edit-btn';
      editBtn.innerText = 'Edit';
      editBtn.addEventListener('click', function() {
-        editTaskModal(array, project, task);
+        editTaskModal(array, project, task, localSession);
+
      });
 
      const priorityBox = document.createElement('div');
@@ -64,25 +84,31 @@ function createTask(name, date, descript, priority, complete = 'false') {
 
      const statusBtn = document.createElement('button');
      statusBtn.id = 'status-btn';
+
      // Handles status completion and pushes it to object
      statusBtn.addEventListener('click', function() {
         if (task.complete == 'false') {
-            task.completeTask();
-            statusBtn.style.textDecoration = 'line-through';
+            task.complete = true;
             statusBtn.innerText = 'Completed';
-        } else {
-            task.uncompleteTask();
-            statusBtn.style.textDecoration = 'none';
-            statusBtn.innerText = 'Uncompleted';
+            statusBtn.style.backgroundColor = 'rgb(52, 55, 66)';
+            statusBtn.style.color = 'white';
+//////////////////////////// LOCAL STORAGE //////////////////////////////
+if(localSession == true) {
+    setLocal(array);
+};
+//////////////////////////// LOCAL STORAGE //////////////////////////////
         }
     });
   
 
      if(task.complete == 'false') {
          statusBtn.innerText = 'Uncomplete';
+         statusBtn.style.backgroundColor = 'white';
+         statusBtn.style.color = 'black';
      } else {
          statusBtn.innerText = 'Completed';
-         statusBtn.style.textDecoration = 'line-through'
+         statusBtn.style.backgroundColor = 'rgb(52, 55, 66)';
+         statusBtn.style.color = 'white';
      };
 
      notebox.appendChild(deleteTask);
@@ -102,12 +128,16 @@ function createTask(name, date, descript, priority, complete = 'false') {
 
 
  // Handles task button function
- function addTaskButton(array) {
-
+ function addTaskButton(array, localSession) {
+//////////////////////////// LOCAL STORAGE //////////////////////////////
+if(localSession == true) {
+    array == getLocal();
+};
+//////////////////////////// LOCAL STORAGE //////////////////////////////
     const taskBtn = document.querySelector('#newTask');
 
     taskBtn.addEventListener('click', function() {
-        taskModal(array);
+        taskModal(array, localSession);
     });
 
  };
@@ -116,7 +146,7 @@ function createTask(name, date, descript, priority, complete = 'false') {
 
  function createFullTask(array, project, name, date, descript, priority, complete) {
 
-    const newTask = createTask(name, date, descript, priority, complete = 'false');
+    const newTask = createTask(name, date, descript, priority, complete);
     // Find the project array index
     const findProjectIndex = array.findIndex(e => e[0] == project);
     // Pushes the task on the project

@@ -1,5 +1,14 @@
-function projectModalUI(array) {
-   
+import { getLocal, setLocal } from "./localStorage";
+import { createFullProject } from "./createproject";
+
+function projectModalUI(array, localSession) {
+//////////////////////////// LOCAL STORAGE //////////////////////////////
+if(localSession == true) {
+    array == getLocal();
+};
+//////////////////////////// LOCAL STORAGE //////////////////////////////
+
+
     const projectModal = document.createElement('div');
     projectModal.classList.add('modal');
 
@@ -28,11 +37,16 @@ function projectModalUI(array) {
     submitBtn.type = 'submit';
     submitBtn.innerText = 'Add Project';
     submitBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+
         const newProject = ProjectText.value;
 
         if (ProjectText.value != '') {
-            createFullProject(newProject, array);
-            projectModal.remove();
+            // Create project and pass it to array
+            createFullProject(newProject, array, localSession);
+
+            // Remove project Modal
+;            projectModal.remove();
         };
         
     });

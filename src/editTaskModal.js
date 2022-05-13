@@ -1,7 +1,18 @@
-import { taskUI, createTask } from "./createtask";
+import { taskUI } from "./createtask";
+import format from "date-fns/format";
+import { getLocal, setLocal } from "./localStorage";
 
 
-function editTaskModal(array, project, task) {
+function editTaskModal(array, project, task, localSession) {
+//////////////////////////// LOCAL STORAGE //////////////////////////////
+
+    if(localSession == true) {
+     array == getLocal();
+    } else {
+     localSession == false;
+    };
+//////////////////////////// LOCAL STORAGE ////////////////////////////// 
+
     const taskModal = document.createElement('div');
     taskModal.classList.add('modal');
     taskModal.classList.add('edit-task');
@@ -28,7 +39,7 @@ function editTaskModal(array, project, task) {
     taskDate.type = 'date';
     taskDate.id = 'date';
     taskDate.setAttribute('required', '');
-    taskDate.value = task.date;
+    taskDate.value = format(new Date(task.date), 'yyyy-dd-MM');
 
    // Task Description
     const textArea = document.createElement('textarea');
@@ -81,15 +92,11 @@ function editTaskModal(array, project, task) {
    submitBtn.type = 'submit';
    submitBtn.innerText = 'Edit Task';
    submitBtn.addEventListener('click', function() {
-
-
    // Grabs form info for task
    const tName = taskText.value;
-   const tDate = taskDate.value;
+   const tDate = format(new Date(taskDate.value), 'MM-dd-yyyy');
    const tDiscript = textArea.value;
    const tPriority = selectPriority.value;
-
-
    //Grabs project value
    const tProject = project;
 
@@ -99,11 +106,18 @@ function editTaskModal(array, project, task) {
    // Edits objects of task
 
    // If task text, date, and description is not empty edith the object data
-   if (taskText.value && taskDate.value && textArea.value != '') {
+   if (taskText.value || taskDate.value || textArea.value != '') {
       task.name = tName;
       task.date = tDate;
       task.descript = tDiscript;
       task.priority = tPriority;
+
+//////////////////////////// LOCAL STORAGE //////////////////////////////
+if(localSession == true) {
+    setLocal(array);
+};
+//////////////////////////// LOCAL STORAGE //////////////////////////////
+
       taskModal.remove();
 
 
@@ -124,7 +138,7 @@ function editTaskModal(array, project, task) {
        for (let i = 0; i < activeProject.length; i++) {
            // Displays only objects
            if(typeof activeProject[i] == 'object') {
-               content.append(taskUI(array, tProject, activeProject[i]));
+               content.append(taskUI(array, tProject, activeProject[i], localSession));
            };
        }
    };
@@ -150,14 +164,6 @@ function editTaskModal(array, project, task) {
    return document.body.append(taskModal)
 };
 
- // Creates Options for form select
- function createOption(name, appendTo) {
-    const options = document.createElement('option');
-    options.value = name;
-    options.innerText = name;
-
-    appendTo.append(options);
- };
 
 
 export { editTaskModal };
