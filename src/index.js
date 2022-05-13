@@ -1,7 +1,12 @@
 import { generateSessionStorage, generateLocalStorageSession } from "./generateWebsite";
 
 
-generateLocalStorageSession();
+if(window.localStorage) {
+    generateLocalStorageSession()
+} else {
+    generateSessionStorage()
+};
+
 
 
 
